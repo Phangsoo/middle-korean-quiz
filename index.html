@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>중세 국어 기초 개념 테스트 for 원당고</title>
+<style>
+:root{--ink:#191919;--sub:#737373;--line:#e7e7e7;--bg:#f5f6f8;--ok:#eaf8ee;--no:#fff0f0}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:"Noto Sans KR","Noto Sans CJK KR","Apple SD Gothic Neo","Malgun Gothic","Batang","Gulim",sans-serif;system-ui,-apple-system,"Noto Sans KR",sans-serif}
+.wrap{max-width:720px;margin:auto;padding:22px 16px 70px}.card{background:#fff;border:1px solid var(--line);border-radius:22px;padding:25px;box-shadow:0 8px 30px #0000000a}
+h1{font-size:28px;margin:0 0 10px}h2{font-size:21px;line-height:1.65;white-space:pre-wrap}.muted{color:var(--sub);line-height:1.65}
+.top{display:flex;justify-content:space-between;align-items:center}.tag{font-size:13px;background:#f0f0f2;border-radius:99px;padding:5px 10px}
+.progress{height:8px;background:#eee;border-radius:99px;overflow:hidden;margin:15px 0}.bar{height:100%;background:#191919}
+button{font:inherit;border:1px solid #ddd;background:#fff;border-radius:13px;padding:14px 16px;cursor:pointer}button.primary{background:#191919;color:#fff;border-color:#191919}
+.option{width:100%;display:flex;gap:12px;align-items:flex-start;text-align:left;margin:8px 0;line-height:1.5}.option.selected{outline:2px solid #191919;background:#f7f7f7}
+.num{font-weight:700;min-width:20px}.hidden{display:none}input[type=text]{width:100%;font:inherit;font-size:18px;padding:15px;border:1px solid #d5d5d5;border-radius:13px}
+.feedback{margin-top:16px;padding:16px;border-radius:13px;line-height:1.65;white-space:pre-wrap}.good{background:var(--ok)}.bad{background:var(--no)}
+.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:18px}.score{font-size:46px;font-weight:800;margin:12px 0}.review{border-top:1px solid #eee;padding:18px 0;line-height:1.65}.review:first-child{border-top:0}
+@media(max-width:520px){.card{padding:19px}.actions button{width:100%}}
+
+.intro-message{
+  margin: 14px 0 24px;
+  line-height: 1.7;
+  font-size: 16px;
+  word-break: keep-all;
+}
+</style>
+<style id="old-hangul-full-font-fix">
+@font-face {
+  font-family: "NotoSansCJKkr-Full";
+  src: url("https://cdn.jsdelivr.net/gh/notofonts/noto-cjk@main/Sans/OTF/Korean/NotoSansCJKkr-Regular.otf") format("opentype");
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: block;
+}
+html, body, button, input, textarea, select,
+.question, .options, .option, .feedback, .explanation,
+#question, #choices, #result, #review {
+  font-family: "NotoSansCJKkr-Full", "Noto Sans CJK KR", "Noto Sans KR",
+               "Apple SD Gothic Neo", "Malgun Gothic", sans-serif !important;
+  font-synthesis: weight;
+  -webkit-font-feature-settings: "ccmp" 1, "ljmo" 1, "vjmo" 1, "tjmo" 1;
+  font-feature-settings: "ccmp" 1, "ljmo" 1, "vjmo" 1, "tjmo" 1;
+}
+</style>
+
+<meta name="quiz-version" content="v9-old-hangul-fullfont">
+</head>
+<body><div class="wrap">
+<section id="start" class="card">
+<h1>중세 국어 기초 개념 테스트 for 원당고</h1>
+<p class="intro-message">어떻게든 공부 시키려고 내가 별걸 다 만든다. 열심히 해서 좋은 성적 받아보자!</p>
+
+
+<div class="actions"><button class="primary" onclick="startQuiz()">시작하기</button></div>
+</section>
+<section id="quiz" class="card hidden">
+<div class="top">
+  <b id="count"></b>
+  <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;justify-content:flex-end">
+    <span id="liveScore" class="tag">정답 0 · 오답 0</span>
+    <span id="tag" class="tag"></span>
+  </div>
+</div>
+<div class="progress"><div id="bar" class="bar"></div></div>
+<h2 id="question"></h2><div id="area"></div><div id="feedback" class="hidden"></div>
+<div class="actions"><button id="checkBtn" class="primary" onclick="checkAnswer()">정답 확인</button><button id="nextBtn" class="primary hidden" onclick="nextQuestion()">다음 문제</button></div>
+</section>
+<section id="result" class="card hidden"><h1>결과</h1><div id="score" class="score"></div><p id="summary" class="muted"></p>
+<div class="actions"><button class="primary" onclick="showWrong()">틀린 문제 모아보기</button><button onclick="retryWrong()">틀린 문제만 다시 풀기</button><button onclick="home()">처음부터</button></div></section>
+<section id="wrong" class="card hidden"><h1>오답 모아보기</h1><div id="wrongList"></div>
+<div class="actions"><button class="primary" onclick="retryWrong()">오답 다시 풀기</button><button onclick="showResult()">결과로 돌아가기</button></div></section>
+</div>
+<script>
+const BANK=[{"sourceRow":4,"kind":"빈칸채우기","question":"훈민정음에서 자음과 모음 기본자를 창제한 기본 원리는 OO의 원리이다.","explanation":"","type":"short","answers":["상형"],"publicAnswer":"상형"},{"sourceRow":5,"kind":"빈칸채우기","question":"훈민정음의 자음 기본자는 OOOO의 모양을 본떠 만들어졌다.","explanation":"","type":"short","answers":["발음기관"],"publicAnswer":"발음기관"},{"sourceRow":6,"kind":"빈칸채우기","question":"‘ㄱ’에서 OO의 원리로 ㅋ가 창제되었고, 같은 원리로 ㄴ에서 ㄷ, ㅌ이 창제되었다.","explanation":"획을 더하는 원리, ‘가획’이다.","type":"short","answers":["가획"],"publicAnswer":"가획"},{"sourceRow":7,"kind":"O,X","question":"훈민정음 자음자 중에서 ㆁ는 ㅇ에 획을 더하는 방식으로 만들어졌다.","explanation":"ㆁ은 이체자로, 가획의 원리로 만들어지 않았다.","type":"ox","answer":"X"},{"sourceRow":8,"kind":"O,X","question":"훈민정음 자음자 중에서 ㄹ은 ㄴ과 발음 위치가 같으며, ㄴ에 획을 더하는 방식으로 만들어졌다.","explanation":"ㄹ은 이체자로, 가획의 원리로 만들어지지 않았다.","type":"ox","answer":"X"},{"sourceRow":9,"kind":"빈칸채우기","question":"훈민정음 모음 기본자는 OOO의 모양을 본따 만들어졌다.","explanation":"하늘(ㆍ), 땅(ㅡ), 사람(ㅣ)의 모양을 본따 모음 기본자를 만들었다.","type":"short","answers":["천지인"],"publicAnswer":"천지인"},{"sourceRow":10,"kind":"O,X","question":"‘ㅗ’는 초출자이며 양성 모음이고, ‘ㅕ’는 재출자이며 음성 모음이다.","explanation":"","type":"ox","answer":"O"},{"sourceRow":11,"kind":"O,X","question":"현대 국어에서 ㅔ는 단모음이지만, 중세 국어에서 ㅔ는 이중모음이었다.","explanation":"","type":"ox","answer":"O"},{"sourceRow":12,"kind":"O,X","question":"중세 국어에서 ㆍ는 단모음이었으며, 음성 모음이었다","explanation":"아래 아(ㆍ)는 양성 단모음이었다.","type":"ox","answer":"X"},{"sourceRow":13,"kind":"빈칸채우기","question":"입술을 가볍게 떠는 소리를 나타냈던 ㅸ은 ‘OOO 비읍’이라고 한다.","explanation":"","type":"short","answers":["순경음"],"publicAnswer":"순경음"},{"sourceRow":14,"kind":"O,X","question":"훈민정음에서 ‘ㅃ’은 같은 음운 두 개를 나란히 쓴 것으로, ‘합용 병서’ 표기에 해당한다.","explanation":"같은 것을 두 개 나란히 쓴 것은 ‘각자 병서’라고 한다.","type":"ox","answer":"X"},{"sourceRow":15,"kind":"빈칸채우기","question":"중세 국어에서, ㅅ계열 합용 병서인 ‘ㅼ’은 ㅅ 뒤에 ㄷ이 바로 이어 발음되는 방식으로 나타났다.","explanation":"된소리로 발음되었다.","type":"ox","answer":"X"},{"sourceRow":16,"kind":"빈칸채우기","question":"‘벼+ᄡᅵ’가 현재 ‘볍씨’로 나타나는 것은, ㅂ계열의 합용병서가 OOOOO으로 발음되었다는 증거가 된다.","explanation":"","type":"short","answers":["어두 자음군","어두자음군"],"publicAnswer":"어두 자음군"},{"sourceRow":18,"kind":"O,X","question":"중세 국어에는 띄어쓰기가 없었다.","explanation":"","type":"ox","answer":"O"},{"sourceRow":19,"kind":"O,X","question":"‘ㆁ’은 훈민정음 28자모음 안에 포함되었다가 소실된 문자로, 소리와 표기 모두가 사라졌다.","explanation":"표기는 소멸되었지만, 음가는 받침 ㆁ에 그대로 남아 있다.","type":"ox","answer":"X"},{"sourceRow":20,"kind":"단답형","question":"문자 ‘ㅿ’의 이름은?","explanation":"","type":"short","answers":["반치음"],"publicAnswer":"반치음"},{"sourceRow":21,"kind":"단답형","question":"문자 ‘ㆆ’의 이름은?","explanation":"","type":"short","answers":["여린히읗"],"publicAnswer":"여린히읗"},{"sourceRow":22,"kind":"O,X","question":"‘ᄋᆞᄃᆞᆯ’은 ‘ᄋᆞᄃᆞᆯ>아ᄃᆞᆯ>아들’의 과정을 거쳐 ‘아들’로 변했다.","explanation":"아래아는 둘째와 그 다음 음절의 것부터 소멸되었고, 첫째 음절의 아래아가 더 나중에 소멸되었다.","type":"ox","answer":"X"},{"sourceRow":23,"kind":"O,X","question":"세종대왕은 초성, 중성, 종성의 자모음을 따로 창제하였다.","explanation":"초성 자음과 중성 모음을 따로 창제한 것은 맞지만, 중성자는 따로 만들지 않고 초성의 글자를 다시 사용하도록 하였다.(종성부용초성)","type":"ox","answer":"X"},{"sourceRow":24,"kind":"단답형","question":"현대 국어의 종성에서 발음 가능한 음운의 개수와, 중세 국어의 종성에서 발음 가능한 음운의 개수를 합치면 몇 개인가?","explanation":"","containsAny":["15"],"type":"short","answers":["15","15개"],"publicAnswer":"15"},{"sourceRow":25,"kind":"객관식","question":"중세 국어 ‘손’ 뒤에 와야 할 목적격조사는?","explanation":"앞말에 받침이 있기 때문에 ‘을/ᄋᆞᆯ’계열이 오고 ‘손’에 양성 모음이 쓰였기 때문에 모음조화에 의해 양성 모음이 와야 한다.","type":"single","options":["을","ᄋᆞᆯ","를","ᄅᆞᆯ"],"answer":"ᄋᆞᆯ"},{"sourceRow":30,"kind":"O,X","question":"중세 국어에서 ‘도젹’ 뒤에는 보조사 (은/ᄋᆞᆫ/는/ᄂᆞᆫ) 중에 ‘은’이 선택되어 ‘도젹은’의 형태로 나타났을 것이다.","explanation":"‘은’이 선택되는 것은 맞지만, 이어적기를 하여 ‘도져근’처럼 나타났을 것이다.","type":"ox","answer":"X"},{"sourceRow":31,"kind":"선택형","question":"중세 국어에서 체언과 조사, 어간과 어미를 적을 때는 [     ]의 원리를 적용하였다.","explanation":"소리나는 대로 연음시켜 썼으므로, ‘표음주의’ 원칙에 해당한다.","type":"single","options":["표음주의","표의주의"],"answer":"표음주의"},{"sourceRow":32,"kind":"객관식","question":"다음 중 주격 조사의 형태가 다르게 실현된 것은?","explanation":"2번만 'ㅣ'의 형태로, 나머지는 '이'의 형태로 실현되었다.","type":"single","options":[":ᄉᆡ·미기·픈·므·른·","니르·고·져·호ᇙ·배이·셔·도",":내·히이·러바·ᄅᆞ·래·가ᄂᆞ·니","나·랏:말ᄊᆞ·미"],"answer":"니르·고·져·호ᇙ·배이·셔·도"},{"sourceRow":37,"kind":"객관식","question":"다음 단어들 뒤에 중세 국어 주격 조사가 위치한다고 할 때, 그 형태가 다르게 와야 하는 것 하나는?","explanation":"나머지는 ‘ㅣ’의 형태로, 1번만 생략형(∅)으로 와야 한다.","type":"single","options":["불휘","나","부텨","공ᄌᆞ"],"answer":"불휘"},{"sourceRow":42,"kind":"객관식","question":"아래 단어 중, 중세 국어 관형격조사를 잘못 사용한 형태를 모두 고르시오.","explanation":"3의 ‘말’은 높이지 않는 유정명사이므로 ‘ᄋᆡ’가 와야 하고, 4의 ‘그력’은 음성모음으로 끝나므로 ‘의’가 왔어야 한다.","type":"multi","options":["수픐 가운데(수풀 가운데)","등자ᇇ 기름(등잔의 기름)","맔 털(말의 털)","그려ᄀᆡ 목(기러기의 목)"],"answers":["맔 털(말의 털)","그려ᄀᆡ 목(기러기의 목)"]},{"sourceRow":47,"kind":"객관식","question":"아래 단어 중, 중세 국어 관형격조사를 잘못 사용한 형태를 모두 고르시오.","explanation":"4번 ‘최구’는 음성모음이므로 뒤에 ‘ᄋᆡ’가 아닌 ‘의’가 와야 한다.","type":"single","options":["아바니ᇝ 곁(아바님의 곁)","부텻 자비(부처의 자비)","아ᄃᆞᄅᆡ 짐(아들의 짐)","崔九ᄋᆡ 집(최구의 집)"],"answer":"崔九ᄋᆡ 집(최구의 집)"},{"sourceRow":52,"kind":"빈칸채우기","question":"중세 국어 조사 ‘하’는 높임의 의미를 더하는 O격조사이다.","explanation":"","type":"short","answers":["호","호격"],"publicAnswer":"호"},{"sourceRow":54,"kind":"객관식","question":"다음 중 ‘ㅎ종성체언’이 드러나지 않는 사례를 고르시오.","explanation":"","type":"single","options":["머·리털·이·며·ᄉᆞᆯ·ᄒᆞᆫ (머리털과 살은)",":몯ᄒᆞᇙ·노·미하·니·라 (못하는 사람이 많다)","뫼콰 ᄀᆞᄅᆞᆷᄲᅮᆫ (산과 강뿐)",":내·히이·러 (내가 이루어져)"],"answer":":몯ᄒᆞᇙ·노·미하·니·라 (못하는 사람이 많다)"},{"sourceRow":59,"kind":"빈칸채우기","question":"‘살+고기’=살코기, ‘머리+가락’=머리카락\n위의 사례들은 중세 국어에 OOOOO이 존재했음을 보여 준다.","explanation":"","ignoreSpaces":true,"type":"short","answers":["ㅎ종성체언"],"publicAnswer":"ㅎ종성체언"},{"sourceRow":61,"kind":"빈칸채우기","question":"중세 국어에서 ‘방석’은 ‘네모난 모양의 깔개’만을 뜻했으나 현재는 모양에 상관없이 깔개를 지칭하는 말이 되었다. 이는 어휘의 변화 양상 중 의미 OO에 해당한다.","explanation":"","type":"short","answers":["확대"],"publicAnswer":"확대"},{"sourceRow":62,"kind":"단답형","question":"중세 국어에서 높낮이를 통해 의미를 구분했던 ‘성조’를 표기에도 반영하는 수단을 OO(이)라고 한다.","explanation":"","type":"short","answers":["방점"],"publicAnswer":"방점"},{"sourceRow":63,"kind":"빈칸채우기","question":"훈민정음의 ‘世·솅宗조ᇰ御·ᅌᅥᆼ製·졩’ 등을 보면, 이상적 한자음을 구현하고 한자음은 초성+중성+조성을 모두 갖춰 쓰려는 경향이 나타난다. 이를 OOOO식 한자음 표기라고 한다.","explanation":"","type":"short","answers":["동국정운"],"publicAnswer":"동국정운"},{"sourceRow":64,"kind":"빈칸채우기","question":"‘나·랏:말ᄊᆞ·미’에서 ‘말’의 성조는 O성이다.","explanation":"","type":"short","answers":["상","상성"],"publicAnswer":"상"},{"sourceRow":66,"kind":"객관식","question":"성조 중에서 ‘거성’은 점 몇 개를 찍어 나타냈는가?","explanation":"","type":"single","options":["0개","1개","2개","3개"],"answer":"1개"},{"sourceRow":71,"kind":"빈칸채우기","question":"‘中듀ᇰ國·귁·에달·아’의 ‘에’는 현대에서는 처소 부사격 조사로 사용되지만, <훈민정음어제서문>에서는 OO 부사격 조사로 사용되고 있다.","explanation":"","type":"short","answers":["비교"],"publicAnswer":"비교"},{"sourceRow":72,"kind":"O/X","question":"‘·이런젼·ᄎᆞ·로’에서 ‘젼·ᄎᆞ’는 ‘이유, 까닭’이라는 뜻으로, 의미의 변화 양상 중에서 ‘의미 이동’을 보여 준다.","explanation":"‘젼·ᄎᆞ’는 소멸되었으므로, 의미 이동이라고 보기 어렵다.","type":"ox","answer":"X"},{"sourceRow":73,"kind":"빈칸채우기","question":"‘니르·고·져’의 ‘니’에서는, 아직 OOOO이 시작되지 않은 중세 국어의 특징을 엿볼 수 있다.","explanation":"","type":"short","answers":["두음법칙"],"publicAnswer":"두음법칙"},{"sourceRow":74,"kind":"단답형","question":"‘ᄆᆞ·ᄎᆞᆷ:내제·ᄠᅳ·들시·러펴·디’에서 ‘시러’를 번역하시오.","explanation":"","type":"short","answers":["능히"],"publicAnswer":"능히"},{"sourceRow":75,"kind":"빈칸채우기","question":"‘:어엿·비너·겨’에서 ‘:어엿·비’는 어휘 변화상 ‘의미 OO’의 사례에 해당한다.","explanation":"","type":"short","answers":["이동"],"publicAnswer":"이동"},{"sourceRow":76,"kind":"빈칸채우기","question":"‘·스·믈여·듧’과 ‘기·픈·므·른’에서는 공통적으로 OOOOO가 진행되지 않은 중세 국어의 특징이 발견된다.","explanation":"","type":"short","answers":["원순모음화"],"publicAnswer":"원순모음화"},{"sourceRow":77,"kind":"빈칸채우기","question":"‘ᄉᆞᄆᆞᆺ·디’, ‘펴·디’, ‘:됴·코’에서는 공통적으로 OOOO가 진행되지 않은 중세 국어의 특징이 발견된다.","explanation":"","type":"short","answers":["구개음화"],"publicAnswer":"구개음화"},{"sourceRow":78,"kind":"객관식","question":"‘나·랏:말ᄊᆞ·미中듀ᇰ國·귁·에달·아’에서 드러나는 훈민정음의 창제 정신은?","explanation":"","type":"single","options":["창조 정신","자주 정신","애민 정신","실용 정신"],"answer":"자주 정신"},{"sourceRow":83,"kind":"객관식","question":"‘ᄆᆞ·ᄎᆞᆷ:내제·ᄠᅳ·들시·러펴·디:몯ᄒᆞᇙ·노·미하·니·라’에서 드러나는 훈민정음의 창제 정신은?","explanation":"","type":"single","options":["창조 정신","자주 정신","애민 정신","실용 정신"],"answer":"애민 정신"},{"sourceRow":88,"kind":"객관식","question":"‘·새·로·스·믈여·듧字·ᄍᆞᆼ·ᄅᆞᆯᄆᆡᇰ·ᄀᆞ노·니’에서 드러나는 훈민정음의 창제 정신은?","explanation":"","type":"single","options":["창조 정신","자주 정신","애민 정신","실용 정신"],"answer":"창조 정신"},{"sourceRow":93,"kind":"객관식","question":"‘:사ᄅᆞᆷ:마·다:ᄒᆡ·ᅇᅧ:수·ᄫᅵ니·겨·날·로·ᄡᅮ·메便뼌安ᅙᅡᆫ·킈ᄒᆞ·고·져ᄒᆞᇙᄯᆞᄅᆞ·미니·라’에서 드러나는 훈민정음의 창제 정신은?","explanation":"","type":"single","options":["창조 정신","자주 정신","애민 정신","실용 정신"],"answer":"실용 정신"},{"sourceRow":98,"kind":"빈칸채우기","question":"‘곶:됴·코여·름·하ᄂᆞ·니’에서는 OOO가족용을 어긴 사례가 나타난다.","explanation":"","type":"short","answers":["팔종성","8종성"],"publicAnswer":"팔종성"},{"sourceRow":100,"kind":"객관식","question":"중세 국어 명사 ‘여름’의 뜻은 무엇인가?","explanation":"summer는 ‘녀름’이다.","type":"single","options":["열매","여름","여드름","고드름"],"answer":"열매"},{"sourceRow":105,"kind":"객관식","question":"중세 국어 명사 ‘바ᄅᆞᆯ’의 뜻은 무엇인가?","explanation":"용비어천가 2장에 등장한다.","type":"single","options":["바늘","바퀴","바다","바지"],"answer":"바다"},{"sourceRow":110,"kind":"객관식","question":"중세 국어 명사 ‘ᄀᆞᄆᆞᆯ’의 뜻은 무엇인가?","explanation":"용비어천가 2장에 등장한다.","type":"single","options":["가뭄","모래","거물","고모"],"answer":"가뭄"},{"sourceRow":115,"kind":"O, X","question":"‘·날·로·ᄡᅮ·메(날마다 씀에)’에서 ‘쓰다’라는 용언의 기본형은 ‘ᄡᅮ다’이다.","explanation":"‘ᄡᅳ-+-움(명사형전성어미)’에서 ㅡ탈락이 일어난 형태이다.","type":"ox","answer":"X"},{"sourceRow":116,"kind":"O, X","question":"‘호ᇙ·배이·셔·도’, ‘:몯ᄒᆞᇙ·노·미’, ‘ᄒᆞᇙᄯᆞᄅᆞ·미니·라’에서는 공통적으로 관형사형 어미 뒤의 ㆆ 사용이 나타나며, 이는 현대 국어의 된소리되기와 관련이 있다.","explanation":"","type":"ox","answer":"O"},{"sourceRow":9991,"kind":"빈칸채우기","question":"'노〮미〮하니〮라〮'에서 '놈'은 그 뜻을 고려했을 때 현대 국어로 넘어오면서 의미 OO가 일어났다.","explanation":"","type":"short","answers":["축소"],"publicAnswer":"축소"},{"sourceRow":9992,"kind":"O / X","question":"노〮미〮하니〮라〮'에서 '하다'는 그 뜻을 고려했을 때 현대 국어로 넘어오면서 의미 이동이 일어났다.","explanation":"'하다'가 지금의 '하다'로 의미가 이동한 것이 아니라 '하다'는 사라지고 'ᄒᆞ다'가 '하다'가 된 것이므로 의미 이동이라고 보기 어렵다.","type":"ox","answer":"X"}];
+let qs=[],idx=0,records=[],selected=[],locked=false;
+const $=id=>document.getElementById(id);
+const esc=s=>String(s??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]));
+function show(id){["start","quiz","result","wrong"].forEach(x=>$(x).classList.add("hidden"));$(id).classList.remove("hidden")}
+function shuffle(a){a=[...a];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+function label(t){return t==="ox"?"O / X":t==="single"?"선택형":t==="multi"?"복수 선택형":"단답형"}
+function updateLiveScore(){
+  const correct=records.filter(r=>r.correct).length;
+  const wrong=records.length-correct;
+  $("liveScore").textContent=`정답 ${correct} · 오답 ${wrong}`;
+}
+function startQuiz(custom=null){
+  qs=custom?[...custom]:shuffle(BANK);
+  idx=0;records=[];
+  updateLiveScore();
+  show("quiz");
+  render();
+}
+function render(){
+ locked=false;selected=[];const q=qs[idx];
+ $("count").textContent=`${idx+1} / ${qs.length}`;$("tag").textContent=label(q.type);$("bar").style.width=`${idx/qs.length*100}%`;
+ $("question").textContent=q.question;$("feedback").className="hidden";$("checkBtn").classList.remove("hidden");$("nextBtn").classList.add("hidden");$("area").innerHTML="";
+ if(q.type==="short"){const input=document.createElement("input");input.type="text";input.id="textAnswer";input.placeholder="정답을 입력하세요";input.autocomplete="off";input.onkeydown=e=>{if(e.key==="Enter")checkAnswer()};$("area").appendChild(input);return}
+ const opts=q.type==="ox"?["O","X"]:q.options;
+ opts.forEach((v,n)=>{const b=document.createElement("button");b.className="option";b.innerHTML=`<span class="num">${q.type==="ox"?"":(n+1)+"."}</span><span>${esc(v)}</span>`;
+ b.onclick=()=>{if(locked)return;if(q.type==="multi"){if(selected.includes(v)){selected=selected.filter(x=>x!==v);b.classList.remove("selected")}else{selected.push(v);b.classList.add("selected")}}else{selected=[v];[...$("area").children].forEach(x=>x.classList.remove("selected"));b.classList.add("selected")}};$("area").appendChild(b)})
+}
+function norm(s){return String(s??"").trim().replace(/\s+/g," ")}
+function checkAnswer(){
+ if(locked)return;const q=qs[idx];let user,correct,correctText;
+ if(q.type==="short"){
+   user=norm($("textAnswer").value);
+   if(!user){alert("답을 입력해 주세요.");return}
+   const cmp=s=>q.ignoreSpaces?norm(s).replace(/\s+/g,""):norm(s);
+   const ucmp=cmp(user);
+   correct=q.answers.some(a=>cmp(a)===ucmp) || (q.containsAny||[]).some(x=>ucmp.includes(cmp(x)));
+   correctText=q.publicAnswer||q.answers[0];
+ }
+ else if(q.type==="multi"){if(!selected.length){alert("보기를 하나 이상 선택해 주세요.");return}user=[...selected];const a=[...q.answers].sort(),b=[...selected].sort();correct=JSON.stringify(a)===JSON.stringify(b);correctText=q.answers.join(", ")}
+ else{if(!selected.length){alert("답을 선택해 주세요.");return}user=selected[0];correct=user===q.answer;correctText=q.answer}
+ records.push({question:q,user,correct,correctText});
+ updateLiveScore();
+ locked=true;
+ const shownUser=Array.isArray(user)?user.join(", "):user;
+ $("feedback").className="feedback "+(correct?"good":"bad");
+ $("feedback").innerHTML=correct
+   ? `<b>정답입니다.</b>${q.explanation?`\n\n${esc(q.explanation)}`:""}`
+   : `<b>틀렸습니다.</b>\n정답: ${esc(correctText)}${q.explanation?`\n\n${esc(q.explanation)}`:""}`;
+ $("checkBtn").classList.add("hidden");$("nextBtn").classList.remove("hidden");$("nextBtn").textContent=idx===qs.length-1?"결과 보기":"다음 문제";
+}
+function nextQuestion(){if(idx<qs.length-1){idx++;render()}else showResult()}
+function showResult(){show("result");const c=records.filter(r=>r.correct).length;$("score").textContent=`${c} / ${records.length}`;$("summary").textContent=`정답률 ${Math.round(c/records.length*100)}% · 오답 ${records.length-c}개`}
+function showWrong(){show("wrong");const w=records.filter(r=>!r.correct);$("wrongList").innerHTML=w.length?w.map((r,n)=>`<div class="review"><span class="tag">${label(r.question.type)}</span><p><b>${n+1}. ${esc(r.question.question)}</b></p><p>내 답: ${esc(Array.isArray(r.user)?r.user.join(", "):r.user)}</p><p>정답: ${esc(r.correctText)}</p>${r.question.explanation?`<p class="muted">${esc(r.question.explanation)}</p>`:""}</div>`).join(""):"<p>틀린 문제가 없습니다.</p>"}
+function retryWrong(){const w=records.filter(r=>!r.correct).map(r=>r.question);if(!w.length){alert("틀린 문제가 없습니다.");return}startQuiz(shuffle(w))}
+function home(){show("start")}
+</script></body></html>
